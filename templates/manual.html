@@ -1,0 +1,180 @@
+
+{% extends "base.html" %}
+
+{% block title %}Manual Prediction{% endblock %}
+{% block page_title %}Manual Churn Prediction{% endblock %}
+{% block page_desc %}
+Enter customer information to estimate churn probability. Unknown fields can remain blank.
+{% endblock %}
+
+{% block content %}
+
+<form method="POST"
+      action="{{ url_for('manual_predict') }}"
+      class="card-soft">
+
+    <div class="form-grid">
+
+        <!-- CUSTOMER PROFILE -->
+
+        <div class="form-section-heading">
+            <h3><i class="fa-solid fa-user"></i> Customer Profile</h3>
+            <p>Basic customer information</p>
+        </div>
+
+        <div class="form-field">
+            <label for="Age">Age</label>
+            <input type="number" id="Age" name="Age"
+                   step="any" min="0"
+                   placeholder="e.g. 32">
+        </div>
+
+        <div class="form-field">
+            <label for="Gender">Gender</label>
+            <select id="Gender" name="Gender">
+                <option value="">Select Gender</option>
+                <option value="Female">Female</option>
+                <option value="Male">Male</option>
+                <option value="Other">Other</option>
+            </select>
+        </div>
+
+        <div class="form-field">
+            <label for="Country">Country</label>
+            <select id="Country" name="Country">
+                <option value="">Select Country</option>
+                <option value="USA">USA</option>
+                <option value="UK">UK</option>
+                <option value="Canada">Canada</option>
+                <option value="Germany">Germany</option>
+                <option value="Australia">Australia</option>
+                <option value="France">France</option>
+                <option value="India">India</option>
+                <option value="Japan">Japan</option>
+            </select>
+        </div>
+
+        <div class="form-field">
+            <label for="City">City</label>
+            <input type="text" id="City" name="City"
+                   placeholder="e.g. New York">
+        </div>
+
+        <div class="form-field">
+            <label for="Membership_Years">Membership Years</label>
+            <input type="number" id="Membership_Years"
+                   name="Membership_Years" step="any" min="0"
+                   placeholder="e.g. 3.5">
+        </div>
+
+        <div class="form-field">
+            <label for="Signup_Quarter">Signup Quarter</label>
+            <select id="Signup_Quarter" name="Signup_Quarter">
+                <option value="">Select Quarter</option>
+                <option value="Q1">Q1</option>
+                <option value="Q2">Q2</option>
+                <option value="Q3">Q3</option>
+                <option value="Q4">Q4</option>
+            </select>
+        </div>
+
+
+        <!-- CUSTOMER ENGAGEMENT -->
+
+        <div class="form-section-heading">
+            <h3><i class="fa-solid fa-chart-line"></i> Customer Engagement</h3>
+            <p>Login and browsing behaviour</p>
+        </div>
+
+        {% set engagement_fields = [
+            ("Login_Frequency", "Login Frequency", "e.g. 8"),
+            ("Session_Duration_Avg", "Average Session Duration", "e.g. 12.5"),
+            ("Pages_Per_Session", "Pages Per Session", "e.g. 6"),
+            ("Cart_Abandonment_Rate", "Cart Abandonment Rate", "e.g. 0.35"),
+            ("Wishlist_Items", "Wishlist Items", "e.g. 4"),
+            ("Social_Media_Engagement_Score", "Social Media Engagement Score", "e.g. 7.5"),
+            ("Email_Open_Rate", "Email Open Rate", "e.g. 0.45")
+        ] %}
+
+        {% for name, label, hint in engagement_fields %}
+        <div class="form-field">
+            <label for="{{ name }}">{{ label }}</label>
+            <input type="number" id="{{ name }}" name="{{ name }}"
+                   step="any" min="0" placeholder="{{ hint }}">
+        </div>
+        {% endfor %}
+
+
+        <!-- PURCHASE BEHAVIOUR -->
+
+        <div class="form-section-heading">
+            <h3><i class="fa-solid fa-cart-shopping"></i> Purchase Behaviour</h3>
+            <p>Customer transactions and purchase history</p>
+        </div>
+
+        {% set purchase_fields = [
+            ("Total_Purchases", "Total Purchases", "e.g. 25"),
+            ("Average_Order_Value", "Average Order Value", "e.g. 89.99"),
+            ("Days_Since_Last_Purchase", "Days Since Last Purchase", "e.g. 45"),
+            ("Discount_Usage_Rate", "Discount Usage Rate", "e.g. 0.20"),
+            ("Returns_Rate", "Returns Rate", "e.g. 0.10"),
+            ("Product_Reviews_Written", "Product Reviews Written", "e.g. 3"),
+            ("Payment_Method_Diversity", "Payment Method Diversity", "e.g. 2"),
+            ("Lifetime_Value", "Lifetime Value", "e.g. 1250.00"),
+            ("Credit_Balance", "Credit Balance", "e.g. 320.50"),
+            ("Customer_Service_Calls", "Customer Service Calls", "e.g. 2")
+        ] %}
+
+        {% for name, label, hint in purchase_fields %}
+        <div class="form-field">
+            <label for="{{ name }}">{{ label }}</label>
+            <input type="number" id="{{ name }}" name="{{ name }}"
+                   step="any" min="0" placeholder="{{ hint }}">
+        </div>
+        {% endfor %}
+
+
+        <!-- APP USAGE -->
+
+        <div class="form-section-heading">
+            <h3><i class="fa-solid fa-mobile-screen"></i> Technology Usage</h3>
+            <p>Mobile application behaviour</p>
+        </div>
+
+        <div class="form-field">
+            <label for="Mobile_App_Usage">Mobile App Usage</label>
+            <select id="Mobile_App_Usage" name="Mobile_App_Usage">
+                <option value="">Select Usage</option>
+                <option value="1">1</option>
+                <option value="0">0</option>
+            </select>
+        </div>
+
+    </div>
+
+
+    <!-- FORM ACTIONS -->
+
+    <div class="form-actions">
+
+        <button type="reset" class="btn-secondary">
+            <i class="fa-solid fa-rotate-left"></i>
+            Clear Form
+        </button>
+
+        <button type="submit" class="btn-primary">
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+            Predict Churn
+        </button>
+
+    </div>
+
+    <p class="muted small">
+        <i class="fa-solid fa-circle-info"></i>
+        All fields are optional. Fill in the information you know.
+        Missing values will be handled by the trained ML pipeline.
+    </p>
+
+</form>
+
+{% endblock %}

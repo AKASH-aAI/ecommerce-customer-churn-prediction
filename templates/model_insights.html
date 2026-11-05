@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}Model Insights{% endblock %}
+{% block page_title %}Model Insights{% endblock %}
+{% block page_desc %}Performance metrics and top predictive features{% endblock %}
+
+{% block content %}
+<div class="kpi-grid">
+  <div class="kpi-card"><div class="kpi-icon blue"><i class="fa-solid fa-tree"></i></div>
+    <div class="kpi-body"><span class="kpi-label">Algorithm</span><span class="kpi-value" style="font-size:1rem">{{ metrics.algorithm }}</span></div></div>
+  <div class="kpi-card"><div class="kpi-icon blue"><i class="fa-solid fa-layer-group"></i></div>
+    <div class="kpi-body"><span class="kpi-label">Estimators</span><span class="kpi-value">{{ metrics.n_estimators }}</span></div></div>
+  <div class="kpi-card"><div class="kpi-icon blue"><i class="fa-solid fa-sitemap"></i></div>
+    <div class="kpi-body"><span class="kpi-label">Max Depth</span><span class="kpi-value">{{ metrics.max_depth }}</span></div></div>
+  <div class="kpi-card"><div class="kpi-icon green"><i class="fa-solid fa-check"></i></div>
+    <div class="kpi-body"><span class="kpi-label">Train Accuracy</span><span class="kpi-value">{{ metrics.train_acc }}%</span></div></div>
+  <div class="kpi-card"><div class="kpi-icon orange"><i class="fa-solid fa-bullseye"></i></div>
+    <div class="kpi-body"><span class="kpi-label">Test Accuracy</span><span class="kpi-value">{{ metrics.test_acc }}%</span></div></div>
+  <div class="kpi-card"><div class="kpi-icon blue"><i class="fa-solid fa-chart-area"></i></div>
+    <div class="kpi-body"><span class="kpi-label">ROC-AUC</span><span class="kpi-value">{{ metrics.roc_auc }}</span></div></div>
+</div>
+
+<div class="card-soft" style="margin-top:18px">
+  <div class="card-head"><h3>Selected Threshold</h3></div>
+  <p style="font-size:1.5rem;font-weight:600;color:#2563eb">{{ metrics.threshold }}</p>
+  <p class="muted">Predictions at or above this probability are classified as <strong>High Risk</strong>.</p>
+</div>
+
+<div class="grid-2" style="margin-top:18px">
+  <div class="card-soft">
+    <div class="card-head"><h3>Preprocessing Pipeline</h3></div>
+    <ul class="clean-list">
+      <li>Numerical: <code>SimpleImputer(strategy='median')</code></li>
+      <li>Categorical: <code>SimpleImputer(strategy='most_frequent')</code></li>
+      <li>Encoding: <code>OneHotEncoder(handle_unknown='ignore')</code></li>
+      <li>ColumnTransformer + RandomForestClassifier</li>
+    </ul>
+  </div>
+  <div class="card-soft">
+    <div class="card-head"><h3>Workflow</h3></div>
+    <ol class="clean-list">
+      <li>Data cleaning &amp; feature engineering</li>
+      <li>Stratified 80/20 split</li>
+      <li>Pipeline fit (impute → encode → RF)</li>
+      <li>Probability threshold tuned to 0.43</li>
+    </ol>
+  </div>
+</div>
+
+<div class="card-soft" style="margin-top:18px">
+  <div class="card-head"><h3>Top 10 Feature Importances</h3></div>
+  {% if top_features %}
+    <div id="featChart" class="chart"></div>
+  {% else %}
+    <p class="muted">Feature importances unavailable (model pipeline structure not recognized).</p>
+  {% endif %}
+  <p class="muted small" style="margin-top:10px">
+    Feature importance reflects predictive contribution in the model, not causal effect.
+  </p>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{% if top_features %}
+<script>
+const feats = {{ top_features | tojson }};
+Plotly.newPlot('featChart', [{
+  x:feats.map(f=>f.importance), y:feats.map(f=>f.name), type:'bar', orientation:'h',
+  marker:{color:'#2563eb'}
+}], {font:{family:'Inter, sans-serif', size:12},
+     margin:{l:220,r:30,t:10,b:40},
+     paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
+     xaxis:{gridcolor:'#eef2f7', title:'Importance'},
+     yaxis:{gridcolor:'#eef2f7', autorange:'reversed'}},
+   {responsive:true, displayModeBar:false});
+</script>
+{% endif %}
+{% endblock %}

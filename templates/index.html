@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block title %}Overview{% endblock %}
+{% block page_title %}Overview{% endblock %}
+{% block page_desc %}Key performance indicators and customer churn overview{% endblock %}
+
+{% block content %}
+<div class="kpi-grid">
+  <div class="kpi-card">
+    <div class="kpi-icon blue"><i class="fa-solid fa-users"></i></div>
+    <div class="kpi-body">
+      <span class="kpi-label">Total Customers</span>
+      <span class="kpi-value">{{ "{:,}".format(kpis.total_customers) }}</span>
+    </div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-icon red"><i class="fa-solid fa-user-slash"></i></div>
+    <div class="kpi-body">
+      <span class="kpi-label">Churned Customers</span>
+      <span class="kpi-value">{{ "{:,}".format(kpis.churned) }}</span>
+    </div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-icon green"><i class="fa-solid fa-user-check"></i></div>
+    <div class="kpi-body">
+      <span class="kpi-label">Active Customers</span>
+      <span class="kpi-value">{{ "{:,}".format(kpis.active) }}</span>
+    </div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-icon orange"><i class="fa-solid fa-percent"></i></div>
+    <div class="kpi-body">
+      <span class="kpi-label">Overall Churn Rate</span>
+      <span class="kpi-value">{{ kpis.churn_rate }}%</span>
+    </div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-icon red"><i class="fa-solid fa-triangle-exclamation"></i></div>
+    <div class="kpi-body">
+      <span class="kpi-label">High-Risk Customers</span>
+      <span class="kpi-value">{{ "{:,}".format(kpis.high_risk) if kpis.high_risk is not none else "N/A" }}</span>
+    </div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-icon blue"><i class="fa-solid fa-sack-dollar"></i></div>
+    <div class="kpi-body">
+      <span class="kpi-label">Avg Lifetime Value</span>
+      <span class="kpi-value">${{ "{:,.2f}".format(kpis.avg_ltv) }}</span>
+    </div>
+  </div>
+</div>
+
+<div class="card-soft">
+  <div class="card-head">
+    <h3><i class="fa-solid fa-ranking-star"></i> Top High-Risk Customers</h3>
+    <span class="muted">Threshold: {{ threshold }}</span>
+  </div>
+  {% if high_risk_table %}
+  <div class="table-wrap">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Customer ID</th><th>Age</th><th>Country</th>
+          <th>Lifetime Value</th><th>Total Purchases</th>
+          <th>Churn Probability</th><th>Risk</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in high_risk_table %}
+        <tr>
+          <td><strong>{{ r.CustomerID }}</strong></td>
+          <td>{{ r.Age }}</td>
+          <td>{{ r.Country }}</td>
+          <td>${{ "{:,.2f}".format(r.Lifetime_Value) }}</td>
+          <td>{{ r.Total_Purchases }}</td>
+          <td>{{ "%.2f"|format(r.ChurnProb * 100) }}%</td>
+          <td><span class="pill {{ 'pill-high' if r.Risk=='High Risk' else 'pill-low' }}">{{ r.Risk }}</span></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <p class="muted" style="padding:20px 0">High-risk table unavailable (model or data not loaded).</p>
+  {% endif %}
+</div>
+{% endblock %}

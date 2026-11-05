@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Customer Result{% endblock %}
+{% block page_title %}Customer Profile{% endblock %}
+{% block page_desc %}Detailed profile and churn prediction for {{ result.customer_id }}{% endblock %}
+
+{% block content %}
+<div class="result-hero {{ 'risk-high' if result.risk=='High Risk' else 'risk-low' }}">
+  <div class="hero-left">
+    <span class="hero-label">Churn Probability</span>
+    <span class="hero-value">{{ result.probability }}%</span>
+    <span class="pill {{ 'pill-high' if result.risk=='High Risk' else 'pill-low' }}">{{ result.risk }}</span>
+  </div>
+  <div class="hero-right">
+    <div class="mini-stat">
+      <span>Customer ID</span><strong>{{ result.customer_id }}</strong>
+    </div>
+    <div class="mini-stat">
+      <span>Threshold</span><strong>{{ result.threshold }}</strong>
+    </div>
+  </div>
+</div>
+
+<div class="grid-2">
+  <div class="card-soft">
+    <div class="card-head"><h3><i class="fa-solid fa-id-card"></i> Demographics</h3></div>
+    <dl class="detail-list">
+      {% for k, v in demographics.items() %}
+        <dt>{{ k.replace('_',' ') }}</dt><dd>{{ v }}</dd>
+      {% endfor %}
+    </dl>
+  </div>
+
+  <div class="card-soft">
+    <div class="card-head"><h3><i class="fa-solid fa-crown"></i> Membership</h3></div>
+    <dl class="detail-list">
+      {% for k, v in membership.items() %}
+        <dt>{{ k.replace('_',' ') }}</dt><dd>{{ v }}</dd>
+      {% endfor %}
+    </dl>
+  </div>
+
+  <div class="card-soft">
+    <div class="card-head"><h3><i class="fa-solid fa-cart-shopping"></i> Purchase Behavior</h3></div>
+    <dl class="detail-list">
+      {% for k, v in behavior.items() %}
+        <dt>{{ k.replace('_',' ') }}</dt><dd>{{ v }}</dd>
+      {% endfor %}
+    </dl>
+  </div>
+
+  <div class="card-soft">
+    <div class="card-head"><h3><i class="fa-solid fa-signal"></i> Engagement</h3></div>
+    <dl class="detail-list">
+      {% for k, v in engagement.items() %}
+        <dt>{{ k.replace('_',' ') }}</dt><dd>{{ v }}</dd>
+      {% endfor %}
+    </dl>
+  </div>
+</div>
+
+<div style="margin-top:18px">
+  <a href="{{ url_for('search') }}" class="btn-secondary"><i class="fa-solid fa-arrow-left"></i> Search Another</a>
+</div>
+{% endblock %}

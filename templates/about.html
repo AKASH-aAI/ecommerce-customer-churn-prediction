@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}About{% endblock %}
+{% block page_title %}About Project{% endblock %}
+{% block page_desc %}Documentation and known limitations{% endblock %}
+
+{% block content %}
+<div class="card-soft">
+  <h3>CustomerIQ – E-Commerce Customer Churn Prediction System</h3>
+  <p>
+    CustomerIQ is a Flask + Scikit-learn customer intelligence platform that loads a pre-trained
+    Random Forest pipeline and an operating threshold to predict per-customer churn probability,
+    classify customers into High Risk / Low Risk tiers, and visualize churn drivers across the
+    e-commerce customer base.
+  </p>
+
+  <h4 style="margin-top:20px">Dataset</h4>
+  <p>
+    Approximately 50,000 customer records with 26 columns. A synthetic <code>CustomerID</code>
+    (format <code>CUST00001</code>) was generated for identification — these are not real
+    customer identities.
+  </p>
+
+  <h4 style="margin-top:20px">Model</h4>
+  <ul class="clean-list">
+    <li>Random Forest Classifier (200 estimators, max_depth=15, class_weight='balanced')</li>
+    <li>Pipeline: median imputation (numeric), most-frequent imputation (categorical), OneHotEncoder</li>
+    <li>Trained on 80/20 stratified split</li>
+    <li>Classification threshold: <strong>0.43</strong></li>
+  </ul>
+
+  <div class="warn-box">
+    <strong>Known limitation (data leakage).</strong>
+    The current cleaned dataset was imputed before the train/test split. This may introduce
+    information leakage and inflate the reported metrics. The model should eventually be
+    retrained with preprocessing fit only on the training split before its metrics are
+    treated as final.
+  </div>
+
+  <h4 style="margin-top:20px">Important Notes</h4>
+  <ul class="clean-list">
+    <li>Metrics shown are from the original notebook, not independently re-validated.</li>
+    <li>Segments are rule-based, not ML clustering.</li>
+    <li>Feature importance ≠ causation.</li>
+    <li>The <code>Churned</code> target column is never displayed on prediction result pages.</li>
+  </ul>
+</div>
+{% endblock %}

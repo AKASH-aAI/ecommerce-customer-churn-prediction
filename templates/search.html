@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Customer Search{% endblock %}
+{% block page_title %}Customer Search{% endblock %}
+{% block page_desc %}Look up an existing customer by their CustomerID{% endblock %}
+
+{% block content %}
+<div class="card-soft">
+  <form method="POST" class="search-form">
+    <div class="input-group-lg">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <input type="text" name="customer_id" value="{{ query }}"
+             placeholder="Enter Customer ID (e.g. CUST00001)" required>
+      <button type="submit" class="btn-primary">Search</button>
+    </div>
+    <p class="muted small">Customer IDs follow the format <code>CUST00001</code>.</p>
+  </form>
+</div>
+{% endblock %}
